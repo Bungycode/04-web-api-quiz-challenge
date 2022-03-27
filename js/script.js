@@ -60,13 +60,13 @@ var questions = [
 // Organize all of my event listeners into one place.
 function setEventListeners() {
     quiz0BtnEle.addEventListener('click', function () {
-        setState(1);
+        setState('trivia');
     });
     quiz1BtnEle.addEventListener('click', function () {
-        setState(2);
+        setState('scores');
     });
     quiz2ButtonEle.addEventListener('click', function () {
-        setState(0);
+        setState('start');
     });
 
     answersEl.addEventListener('click', function (evt) {
@@ -95,14 +95,21 @@ var dynamicElements = [
 
 function setState(state) {
     switch (state) {
-        case 1:
+        case 'trivia':
             populateQuestion();
+            break;
+        case 'score': 
+
+            break;
+        case 'start':
+
             break;
         default:
             break;
     }
-
-    dynamicElements.forEach(function (ele) {
+    
+    
+    dynamicElements.forEach(function (ele) { // Target the array and implement the .forEach method using a self-calling function to cycle through each current value and use it as the argument placed in the parameter and execute the following code inside the code block.
         var possibleStatesAttr = ele.getAttribute("data-states");
         var possibleStates = JSON.parse(possibleStatesAttr);
         if (possibleStates.includes(state)) {
@@ -115,18 +122,17 @@ function setState(state) {
 }
 
 function populateQuestion() {
-    var questionObj = questions[currentQuestion];
-    // Remove the current list items
-    answersEl.innerHTML = "";
-    questionEl.textContent = questionObj.question;
-    questionObj.answers.forEach(function (question) {
-        var li = document.createElement("li");
-        li.textContent = question;
-        answersEl.appendChild(li);
+    var questionObj = questions[currentQuestion]; // Declare a variable and assign it the value of the index in the questions array.
+    answersEl.innerHTML = ""; // Physically removes the current list items.
+    questionEl.textContent = questionObj.question; // Target the text content of the h2 element and assign it the value of the question property in the questionObj variable.
+    questionObj.answers.forEach(function (answers) { // Target the answers property in the variable questionObj, apply the .forEach method which contains a self-calling function using the property iself as the argument passed into the function through the parameter, and cycle through each current value of the property executing the following code within the code block.
+        var li = document.createElement("li");// Declare a variable and assign it the value of a created li element on the document.
+        li.textContent = answers; // assign the li's text content to the value of the answers property.
+        answersEl.appendChild(li); // and then append it to the location where the id="potentialAnswers" is located. In this case, the unordered list.
     });
-    if (currentQuestion === questions.length - 1) {
-        currentQuestion = 0;
-    } else {
+    if (currentQuestion === questions.length - 1) { // If currentQuestion is strictly equal to questions.length - 1 in regards to data type and data value...            
+        currentQuestion = 0; // ...assign currentQuestion the value of 0.
+    } else { // else increment currentQuestion by 1. 
         currentQuestion++;
     }
 }
