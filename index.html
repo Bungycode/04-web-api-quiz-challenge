@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="http://meyerweb.com/eric/tools/css/reset/v2.0" />
     <link rel="stylesheet" href="./assets/style.css" />
     <title>Document</title>
 </head>
@@ -12,25 +11,27 @@
     <div id="program">
         <header class="header">
         <h1><span class="h1">Quiz Challenge</span></h2>
-        <button id="doSomething" data-states="[0,2]">Start Program</button>
-        <p id="saySomething" data-states="[0,1]">This says something</p>
+            <!-- move those 2 items to their respected screens -->
+            <button id="doSomething" data-states="[0,2]">Start Program</button>
+            <p id="saySomething" data-states="[0,1]">This says something</p>
         </header>
         <main>
-            <section id="screen0" data-states="[0]">
+            <section id="quiz0" data-states="[0]">
                 <h1>Screen 0</h1>
                 <button>Go to State 1</button>
             </section>
-            <section id="screen1" class="hide" data-states="[1]">
+            <section id="quiz1" class="hide" data-states="[1]">
                 <h1>Screen 1</h1>
                 <h2 id="question">Fake text</h2>
                 <ul id="potentialAnswers"></ul>
                 <button>Go to State 2</button>
             </section>
-            <section id="screen2" class="hide" data-states="[2]">
+            <section id="quiz2" class="hide" data-states="[2]">
                 <h1>Screen 3</h1>
                 <button>Go to State0</button>
             </section>
         </main>
     </div>
+    <script src="./js/script.js"></script> 
 </body>
 </html>
