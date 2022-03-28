@@ -1,20 +1,3 @@
-* {
-    box-sizing: border-box;
-}
-
-body {
-    background-color: #174875;
-}
-
-.header {
-    display: flex;
-    justify-content: center;
-}
-
-h1 {
-    border: 1px solid red;
-    color: #E6B114;
-}
 
 body {
     font-family: sans-serif;
@@ -45,7 +28,7 @@ body {
     padding: 10px;
   }
   
-  /* .hide {
+  .hide {
     display: none;
   }
-   */
+  

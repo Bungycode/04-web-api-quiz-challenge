@@ -6,12 +6,35 @@ var quiz1BtnEle = quiz1Ele.querySelector("button");
 var quiz2Ele = document.querySelector("#quiz2");
 var quiz2ButtonEle = quiz2Ele.querySelector("button");
 var questionEl = document.querySelector("#question");
-var answersEl = document.querySelector("#potentialAnswers");
-var doSomethingEle = document.querySelector("#doSomething");
-var saySomethingEle = document.querySelector("#saySomething");
+var answersEl = document.querySelector("#potentialAnswers");;
+var timerEl = document.querySelector("#countDown");
+var initialEl = document.querySelector("#inptInit");
+var topScoresEl = document.querySelector("#topScoresEl");
+var messageEl = document.querySelector("#message");
+var finalScoreEl = document.querySelector("#finalScore");
+var topScores = document.querySelector("#topScoresMsg");
+var topScoresButtonEle = document.querySelector("#topScoresBtn");
+var timeLeft;
+//var timeInterval;
+
 
 // Set a global variable to hide content.
 var HIDE_CLASS = "hide" // Declare a variable and assign it the value of the CSS class .hide ...  .hide contains the property and value - display: none; to hide elements from showing on the screen.
+
+//var storedHighScores =[];
+
+// var storedHighScores =[];
+
+// //   const quizGameObj ={
+// //     initials: "",
+// //     score: 0
+// // }
+
+
+// function quizGameObj(initials, score)  {
+//     this.initials = initials;
+//     this.score = score;
+// }
 
 // An array containing objects with keys that hold the questions, answers, and correct answer with its corresponding values.
 var questions = [
@@ -24,7 +47,7 @@ var questions = [
     answer: 0
     },
     {question: "This data type is used to represent text. They are written by enclosing their content in quotes.",
-    answers: ["objects", "numbers", "arrays", "strings"],
+    answers: ["object", "number", "array", "string"],
     answer: 3
     },
     {question: "Which of these is not a special number?",
@@ -51,7 +74,7 @@ var questions = [
     answers: ["&&", "||", "??", "?:"],
     answer: 0
     },
-    {question: "Which of these operators is known as the module operator?",
+    {question: "Which of these is known as the modulo operator?",
     answers: ["/", "%", "*", "@"],
     answer: 1
     }
@@ -63,16 +86,18 @@ function setEventListeners() { //
         setState("trivia"); // The "trivia" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
     });
     quiz1BtnEle.addEventListener("click", function () { // When quiz1BtnEle is clicked it will call a self-calling function containing the function setState with the argument "scores"
-        setState("scores"); // The "scores" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
+        setState("myScore"); // The "scores" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
     });
     quiz2ButtonEle.addEventListener("click", function () { // When quiz2BtnEle is clicked it will call a self-calling function containing the function setState with the argument "start"
         setState("start"); // The "scores" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
     });
-
+    topScoresButtonEle.addEventListener("click", function () {
+        setState("topScores");
+    })
     answersEl.addEventListener("click", function (evt) { // When the answersEl. variable is clicked (answersEl. contains the list items that are appended to the Ul underneathe the questions of the quiz), the event listener will call a self-calling function to pass in the value of the answers property in the questions object as an argument in place of the evt parameter to execute the following code in the code block.
         var target = evt.target;   // Declares a variable named target that is assigned the target property of the passed in argument. The target is the root element that raised the event.
         if (target.matches("li")) { // The matches() property is used on the variable target to see if it matches "li"...
-            window.alert(target.innerText); // ... if so then a window alert will appear in the browser printing the innerText of the target variable.
+            populateQuestion() // ... if so then a window alert will appear in the browser printing the innerText of the target variable.
         }
     })
 }
@@ -82,33 +107,90 @@ var currentQuestion = 0;
 
 function init() { // Declared a function named init which means initialization of the program.
     setEventListeners(); // Calling this function declares the eventListeners for the program.
+    //populateHighScores ();
 }
 
-var dynamicElements = [ // declares a variable and assigns it the value of an array containing variables as its elements. Currently Indexed 0-4.
+function storeGameData() { // Store the game data in localStorage
+    localStorage.setItem("storedHighScores", JSON.stringify(storedHighScores));
+
+}
+
+function startGame() { // Declared startGame function, resets the current question, also creates the new game object.
+    // currentGame = new quizObj("", 0); // Declare a variable and assign it the value of a constructor function creating a new object and set the values for an existing object's properties. This constructor function also needs the keyword new.
+    populateQuestion(); // Calls the populateQuestion() function to implement the question and answers choices.
+    countDown(); // Calls the countdown() function to initiate the countdown for the quiz.
+}
+
+function evalAnswer(answerChosen) {
+    console.log("answer chosen: " + answerChosen);
+    console.log(questions[currentQuestion]["answer"]);
+    if(answerChosen === questions[currentQuestion]["answer"]) {
+        correctAnswer(true);
+    } else {
+        correctAnswer(false);
+    }
+}
+
+function correctAnswer(correct) {
+    if (correct) {
+        timeLeft = timeLeft + 5;
+        console.log("Current score: " + thisGame["score"] + ", Current time: " + timeLeft);
+        showInfo("correctAnswer");
+    } else {
+        showInfo("wrongAnswer");
+        timeLeft = timeLeft - 10;
+        console.log("Current score: " + thisGame["score"] + ", Current score: " + timeLeft);
+    }
+}
+
+function showInfo(info) {
+    switch (info) {
+        case "correctAnswer": 
+            messageEl.textContent = "You answered correctly!"
+            break;
+        
+        case "wrongAnswer":
+            messageEl.textContent = "Sorry...wrong answer!"
+            break;
+
+        case "topScores":
+            topScoresMsg.classList.add("HIDE_CLASS");
+            break;
+        
+        case "neverPlayed":
+            topScoresMsg.textContent = "Are you going to be our first challenger???"
+            topScoresMsg.classList.remove("HIDE_CLASS");
+            break;
+
+    }
+}
+
+
+var dynamicElements = [ // declares a variable and assigns it the value of an array containing variables as its elements. Currently Indexed 0-3.
     quiz0Ele,
     quiz1Ele,
     quiz2Ele,
-    doSomethingEle,
-    saySomethingEle
+    topScoresButtonEle
 ];
 
-function setState(state) {
-    switch (state) {
-        case "trivia":
-            populateQuestion();
-            break;
-        case "score": 
+function setState(state) { // Declared a function called setState with the parameter of state. When this function is called, it will pass in its argument through the parameter in this function. The switch statement will take in that argument and match it with the expression in each case clause. If the argument matches a case clause, it will then execute the code contained inside of that case clause. It will continue down the list, executing the subsequent case clauses and default unless a break statement ends that particular flow path.
 
-            break;
-        case "start":
+    switch (state) { // The switch statement when called, will pass in the argument in place of the parameter. 
+        case "trivia": // If the value of the argument matches the value of this case it will execute the code contained inside.
+            startGame();
+            break; // The break statement ends this switch statement and proceeds with the rest of the code.
 
-            break;
-        default:
-            break;
+        case "myScore": // If the value of the argument matches the value of this case it will execute the code contained inside.
+            break;// The break statement ends this switch statement and proceeds with the rest of the code.
+
+        case "start":// If the value of the argument matches the value of this case it will execute the code contained inside.
+            break;// The break statement ends this switch statement and proceeds with the rest of the code.
+        default: // The point of the default statement is to provide code that will be executed if the argument that is passed in does not match any of the cases.
+            break; // The break statement ends this switch statement and proceeds with the rest of the code.
     }
     
 
-    dynamicElements.forEach(function (ele) { // Target the array and implement the .forEach method using a self-calling function to cycle through each current value and use it as the argument placed in the parameter and execute the following code inside the code block.
+    dynamicElements.forEach(function (ele) { // Target the array dynamicElements and implement the .forEach method using a self-calling function to cycle through each of its current elements and use it as the argument placed in the parameter and execute the following code inside the code block.
         var possibleStatesAttr = ele.getAttribute("data-states"); // Declare a variable and assign the attribute "data-states" to the argument passed in through the .getAttribute() method.
         var possibleStates = JSON.parse(possibleStatesAttr); // Declare a variable and assign to it the value of turning the values inside the variable possibleStatesAttr into a number using the JSON.parse method.
         if (possibleStates.includes(state)) { // If the variable possibleStates includes the argument that was passed into the sibling switch statement then...
@@ -117,7 +199,6 @@ function setState(state) {
             ele.classList.add(HIDE_CLASS);
         }
     });     
-
 }
 
 function populateQuestion() {
@@ -129,27 +210,34 @@ function populateQuestion() {
         li.textContent = answers; // assign the li's text content to the value of the answers property.
         answersEl.appendChild(li); // and then append it to the location where the id="potentialAnswers" is located. In this case, the unordered list.
     });
-    if (currentQuestion === questions.length - 1) { // If currentQuestion is strictly equal to questions.length - 1 in regards to data type and data value...            
-        currentQuestion = 0; // ...assign currentQuestion the value of 0.
-    } else { // else increment currentQuestion by 1. 
-        currentQuestion++;
+        if (currentQuestion === questions.length - 1) { // If currentQuestion is strictly equal to questions.length - 1 in regards to data type and data value...            
+            currentQuestion = 0; // ...assign currentQuestion the value of 0.
+        } else { // if not then increment currentQuestion by 1. 
+            currentQuestion++;
     }
 }
 
-function setTime() {
-    // Sets interval in variable
-    var timerInterval = setInterval(function() {
-        secondsLeft--;
-        timeEl.textContent = secondsLeft + " seconds left till colorsplosion.";
+function countDown() {
+    var timeLeft = 30;
 
-    if(secondsLeft === 0) {
-        // Stops execution of action at set interval
-        clearInterval(timerInterval); // we wanted to clear the loop because if this wasnt here I think the teacher said it will keep running the loop.
-        // Calls function to create and append image
-        sendMessage();
-    }
+    var timeInterval = setInterval(function () {
+        if (timeLeft > 1) {
+            timerEl.textContent = timeLeft + " seconds remaining";
+            timeLeft--;
 
-    }, 1000); // This is the time that we wanted to run each unit of time. The 1000 is in milliseconds, so we wanted 1 second. When we call the function, our second argument that is passed in the place for the parameter will run the function at one second intervals.
+        } else if (timeLeft === 1) {
+        timerEl.textContent = timeLeft + " second remaining";
+        timeLeft--;
+        } else {
+        timerEl.textContent = "";
+        clearInterval(timeInterval);
+        //displayMessage();
+        timerEl.textContent = timeLeft + " seconds left! Times up!"
+        setState(2)
+        }
+    }, 1000);
 }
+
+
 
 init(); // Calls the function init() which contains the function holding the eventListeners.

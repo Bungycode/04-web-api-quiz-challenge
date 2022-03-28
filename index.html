@@ -10,25 +10,29 @@
 <body>
     <div id="program">
         <header class="header">
-        <h1><span class="h1">Quiz Challenge</span></h2>
+        <h1>Quiz Challenge</h2>
             <!-- move those 2 items to their respected screens -->
-            <button id="doSomething" data-states="[0,2]">Start Program</button>
-            <p id="saySomething" data-states="[0,1]">This says something</p>
+            <button id="topScoresBtn" data-states="[0,2]">Top Scores</button>
         </header>
         <main>
-            <section id="quiz0" data-states="[0]">
+            <section id="quiz0" data-states='["start"]'>
                 <h1>Screen 0</h1>
                 <button>Go to State 1</button>
             </section>
-            <section id="quiz1" class="hide" data-states="[1]">
+            <section id="quiz1" class="hide" data-states='["trivia"]'>
                 <h1>Screen 1</h1>
+                <h2 id="countDown">hello</h2>
                 <h2 id="question">Fake text</h2>
                 <ul id="potentialAnswers"></ul>
                 <button>Go to State 2</button>
+                <h3 id="message"></h3>
             </section>
-            <section id="quiz2" class="hide" data-states="[2]">
+            <section id="quiz2" class="hide" data-states='["myScore"]'>
                 <h1>Screen 3</h1>
                 <button>Go to State0</button>
+            </section>
+            <section id="quiz3" class="hide" data-states='["topScores"]'>
+
             </section>
         </main>
     </div>
