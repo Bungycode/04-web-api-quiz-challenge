@@ -9,20 +9,12 @@ body {
   font-size: 26px;
   }
   
-  header {
+  /* main {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
+    justify-content: space-betweeen;
+  } */
   
-  header p {
-    margin: 0;
-    padding: 0;
-    flex: 1;
-    text-align: right;
-  }
-  
-  header button {
+  main button {
     padding: 10px;
   }
   
@@ -36,5 +28,20 @@ body {
   
   .hide {
     display: none;
+  }
+
+
+  li {
+    border: 1px lightblue solid;
+    width: 15%;
+    text-align: center;
+    background-color: blue;
+    opacity: 75%;
+    margin: 10px;
+  }
+
+  li:hover {
+    opacity: 100%;
+    background-color: darkblue;
   }
   
