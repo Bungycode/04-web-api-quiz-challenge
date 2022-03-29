@@ -1,6 +1,12 @@
 
 body {
-    font-family: sans-serif;
+  background: url(../images/javascript-background.png) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  color: white;
+  font-size: 26px;
   }
   
   header {

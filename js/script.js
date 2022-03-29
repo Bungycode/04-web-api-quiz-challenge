@@ -4,37 +4,33 @@ var quiz0BtnEle = quiz0Ele.querySelector("button");
 var quiz1Ele = document.querySelector("#quiz1");
 var quiz1BtnEle = quiz1Ele.querySelector("button");
 var quiz2Ele = document.querySelector("#quiz2");
-var quiz2ButtonEle = quiz2Ele.querySelector("button");
+var quiz2BtnEle = quiz2Ele.querySelector("button");
+var quiz3Ele = document.querySelector("#quiz3");
+var quiz3BtnEle = quiz3Ele.querySelector("button");
 var questionEl = document.querySelector("#question");
-var answersEl = document.querySelector("#potentialAnswers");;
+var answersEl = document.querySelector("#potentialAnswers");
 var timerEl = document.querySelector("#countDown");
-var initialEl = document.querySelector("#inptInit");
+var initialsEl = document.querySelector("#initals");
 var topScoresEl = document.querySelector("#topScoresEl");
 var messageEl = document.querySelector("#message");
-var finalScoreEl = document.querySelector("#finalScore");
+var myScoreEl = document.querySelector("#myScore");
 var topScores = document.querySelector("#topScoresMsg");
-var topScoresButtonEle = document.querySelector("#topScoresBtn");
+var topScoresBtnEle = document.querySelector("#topScoresBtn");
+var gameObj;
 var timeLeft;
-//var timeInterval;
+var timeInterval;
 
 
 // Set a global variable to hide content.
 var HIDE_CLASS = "hide" // Declare a variable and assign it the value of the CSS class .hide ...  .hide contains the property and value - display: none; to hide elements from showing on the screen.
 
-//var storedHighScores =[];
-
-// var storedHighScores =[];
-
-// //   const quizGameObj ={
-// //     initials: "",
-// //     score: 0
-// // }
+var storedTopScores =[];
 
 
-// function quizGameObj(initials, score)  {
-//     this.initials = initials;
-//     this.score = score;
-// }
+function quizObj(initials, score)  {
+    this.initials = initials;
+    this.score = score;
+}
 
 // An array containing objects with keys that hold the questions, answers, and correct answer with its corresponding values.
 var questions = [
@@ -86,25 +82,38 @@ function setEventListeners() { //
         setState("trivia"); // The "trivia" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
     });
     quiz1BtnEle.addEventListener("click", function () { // When quiz1BtnEle is clicked it will call a self-calling function containing the function setState with the argument "scores"
-        setState("myScore"); // The "scores" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
+        setState("topScores"); // The "scores" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
     });
-    quiz2ButtonEle.addEventListener("click", function () { // When quiz2BtnEle is clicked it will call a self-calling function containing the function setState with the argument "start"
+    quiz2BtnEle.addEventListener("click", function () { // When quiz2BtnEle is clicked it will call a self-calling function containing the function setState with the argument "start"
         setState("start"); // The "scores" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
     });
-    topScoresButtonEle.addEventListener("click", function () {
+    topScoresBtnEle.addEventListener("click", function () {
         setState("topScores");
-    })
+    });
     answersEl.addEventListener("click", function (evt) { // When the answersEl. variable is clicked (answersEl. contains the list items that are appended to the Ul underneathe the questions of the quiz), the event listener will call a self-calling function to pass in the value of the answers property in the questions object as an argument in place of the evt parameter to execute the following code in the code block.
         var target = evt.target;   // Declares a variable named target that is assigned the target property of the passed in argument. The target is the root element that raised the event.
         if (target.matches("li")) { // The matches() property is used on the variable target to see if it matches "li"...
-            populateQuestion() // ... if so then a window alert will appear in the browser printing the innerText of the target variable.
+            evalAnswer(currentQuestion, target.getAttribute("data-index"));
+            if(currentQuestion === questions.length - 1) {
+                console.log("All questions answered! Let's see how you did!");
+                clearInterval(timeInterval);
+                setState(scores);
+            } else {
+                currentQuestion++;
+                populateQuestion(currentQuestion) // ... if so then a window alert will appear in the browser printing the innerText of the target variable.
+            }
         }
-    })
+    });
+    document.addEventListener("submit", function (evt) {
+        evt.preventDefault();
+        enterInitials(currentGame.score);
+        setState("topScores");
+    });
 }
 
 // My current question count
 var currentQuestion = 0;
-
+var currentGame;
 function init() { // Declared a function named init which means initialization of the program.
     setEventListeners(); // Calling this function declares the eventListeners for the program.
     //populateHighScores ();
@@ -116,7 +125,7 @@ function storeGameData() { // Store the game data in localStorage
 }
 
 function startGame() { // Declared startGame function, resets the current question, also creates the new game object.
-    // currentGame = new quizObj("", 0); // Declare a variable and assign it the value of a constructor function creating a new object and set the values for an existing object's properties. This constructor function also needs the keyword new.
+    currentGame = new quizObj("", 0); // Declare a variable and assign it the value of a constructor function creating a new object and set the values for an existing object's properties. This constructor function also needs the keyword new.
     populateQuestion(); // Calls the populateQuestion() function to implement the question and answers choices.
     countDown(); // Calls the countdown() function to initiate the countdown for the quiz.
 }
@@ -134,12 +143,12 @@ function evalAnswer(answerChosen) {
 function correctAnswer(correct) {
     if (correct) {
         timeLeft = timeLeft + 5;
-        console.log("Current score: " + thisGame["score"] + ", Current time: " + timeLeft);
+        console.log("Current time: " + timeLeft);
         showInfo("correctAnswer");
     } else {
         showInfo("wrongAnswer");
         timeLeft = timeLeft - 10;
-        console.log("Current score: " + thisGame["score"] + ", Current score: " + timeLeft);
+        console.log("Current score: " + timeLeft);
     }
 }
 
@@ -170,7 +179,8 @@ var dynamicElements = [ // declares a variable and assigns it the value of an ar
     quiz0Ele,
     quiz1Ele,
     quiz2Ele,
-    topScoresButtonEle
+    quiz3Ele,
+    topScoresBtnEle
 ];
 
 function setState(state) { // Declared a function called setState with the parameter of state. When this function is called, it will pass in its argument through the parameter in this function. The switch statement will take in that argument and match it with the expression in each case clause. If the argument matches a case clause, it will then execute the code contained inside of that case clause. It will continue down the list, executing the subsequent case clauses and default unless a break statement ends that particular flow path.
@@ -180,10 +190,12 @@ function setState(state) { // Declared a function called setState with the param
             startGame();
             break; // The break statement ends this switch statement and proceeds with the rest of the code.
 
-        case "myScore": // If the value of the argument matches the value of this case it will execute the code contained inside.
+        case "scores": // If the value of the argument matches the value of this case it will execute the code contained inside.
+            myScore();
             break;// The break statement ends this switch statement and proceeds with the rest of the code.
 
         case "start":// If the value of the argument matches the value of this case it will execute the code contained inside.
+            topScoresList();
             break;// The break statement ends this switch statement and proceeds with the rest of the code.
         default: // The point of the default statement is to provide code that will be executed if the argument that is passed in does not match any of the cases.
             break; // The break statement ends this switch statement and proceeds with the rest of the code.
@@ -217,10 +229,52 @@ function populateQuestion() {
     }
 }
 
-function countDown() {
-    var timeLeft = 30;
 
-    var timeInterval = setInterval(function () {
+function myScore() { // Declaring a function named myScore(). This function when called, assigns the value of the final score in the text content of the myScoreEl variable.
+    myScoreEl.textContent = currentGame.score;
+}
+
+function enterInitials(score) {
+    currentGame["initials"] = initialsEl.value;
+    storedTopScores.push(currentGame);
+    storeGameData();
+}
+
+function topScoresList() {
+    console.log("Pulling Top Scores");
+    storedTopScores = JSON.parse(localStorage.getItem("storedTopScores"));
+    console.log("storedTopScores");
+    topScoresEl.innerHTML = "";
+    var table = document.createElement("table");
+    var tableHead = document.createElement("thead");
+    var tableBody = document.createElement("tbody");
+    var row = table.insertRow(0);
+    var cell = row.insertCell(0);
+    cell.innerHTML = "<h2>Your Initials</h2>"
+    if (storedTopScores !== null) {
+        storedTopScores = storedTopScores.sort((a, b) => b.score - a.score);
+        console.log("Top Scores List!");
+        showInfo("topScores");
+        storedTopScores.forEach(function (gameObj, index) {
+            console.log('[" + index + "]: ' + gameObj.initials);
+            var row = table.insertRow(index + 1);
+            var cell = row.insertCell(0);
+            cell.innerHTML = gameObj.initials;
+            cell = row.insertCell(0);
+            cell.innerHTML = gameObj.score;
+            topScoresEl.appendChild(table);
+        });
+    } else {
+        console.log("No Top Score Yet!");
+        showInfo("neverPlayed");
+        storedTopScores = [];
+    }
+}
+
+function countDown() {
+    timeLeft = 30;
+
+    timeInterval = setInterval(function () {
         if (timeLeft > 1) {
             timerEl.textContent = timeLeft + " seconds remaining";
             timeLeft--;

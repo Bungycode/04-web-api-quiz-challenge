@@ -5,34 +5,45 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./assets/style.css" />
-    <title>Document</title>
+    <title>JavaScript Quiz</title>
 </head>
 <body>
     <div id="program">
-        <header class="header">
-        <h1>Quiz Challenge</h2>
-            <!-- move those 2 items to their respected screens -->
-            <button id="topScoresBtn" data-states="[0,2]">Top Scores</button>
-        </header>
         <main>
             <section id="quiz0" data-states='["start"]'>
-                <h1>Screen 0</h1>
-                <button>Go to State 1</button>
+                <br>
+                <h1>JavaScript Quiz Challenge</h2>
+                <p>How well do you think you know JavaScript!? Test your knowledge!</p>
+                <p>Answer the questions before the time runs out!</p>
+                <button>Start the quiz!</button>
+                <button id="topScoresBtn" data-states='["start","scores"]'>Top Scores</button>
+                
             </section>
             <section id="quiz1" class="hide" data-states='["trivia"]'>
                 <h1>Screen 1</h1>
                 <h2 id="countDown">hello</h2>
                 <h2 id="question">Fake text</h2>
-                <ul id="potentialAnswers"></ul>
+                <ol id="potentialAnswers"></ol>
                 <button>Go to State 2</button>
                 <h3 id="message"></h3>
             </section>
-            <section id="quiz2" class="hide" data-states='["myScore"]'>
-                <h1>Screen 3</h1>
-                <button>Go to State0</button>
+            <section id="quiz2" class="hide" data-states='["scores"]'>
+                <h1>Let's see how you did!</h1>
+                <h2>My Score: <span id="myScore"></span></h2>
+                <form id="topScoreForm">
+                    <p>Player Initials Here: </p>
+                    <label class="initialsStyle">
+                        <input type="text" id="initials" />
+                    </label>
+                </form>
+
+                <button>Submit</button>
             </section>
             <section id="quiz3" class="hide" data-states='["topScores"]'>
-
+                <h1>Top Scores</h1>
+                <h2 id="topScoresMsg"></h2>
+                <p id="topScoresEl"></p>
+                <button>Ready to test your knowledge once again?!</button>
             </section>
         </main>
     </div>
