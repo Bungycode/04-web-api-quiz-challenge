@@ -76,40 +76,7 @@ var questions = [
     }
 ];
 
-// Declared a function to organize all of my event listeners into one place. The function is called through the function init when the program loads before user input. In doing so, the event listeners will be waiting for the user to activate them.
-function setEventListeners() { // 
-    quiz0BtnEle.addEventListener("click", function () { // When quiz0BtnEle is clicked it will call a self-calling function containing the function setState with the argument "trivia"
-        setState("trivia"); // The "trivia" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
-    });
-    quiz1BtnEle.addEventListener("click", function () { // When quiz1BtnEle is clicked it will call a self-calling function containing the function setState with the argument "scores"
-        setState("topScores"); // The "scores" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
-    });
-    quiz2BtnEle.addEventListener("click", function () { // When quiz2BtnEle is clicked it will call a self-calling function containing the function setState with the argument "start"
-        setState("start"); // The "scores" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
-    });
-    topScoresBtnEle.addEventListener("click", function () {
-        setState("topScores");
-    });
-    answersEl.addEventListener("click", function (evt) { // When the answersEl. variable is clicked (answersEl. contains the list items that are appended to the Ul underneathe the questions of the quiz), the event listener will call a self-calling function to pass in the value of the answers property in the questions object as an argument in place of the evt parameter to execute the following code in the code block.
-        var target = evt.target;   // Declares a variable named target that is assigned the target property of the passed in argument. The target is the root element that raised the event.
-        if (target.matches("li")) { // The matches() property is used on the variable target to see if it matches "li"...
-            evalAnswer(currentQuestion, target.getAttribute("data-index"));
-            if(currentQuestion === questions.length - 1) {
-                console.log("All questions answered! Let's see how you did!");
-                clearInterval(timeInterval);
-                setState(scores);
-            } else {
-                currentQuestion++;
-                populateQuestion(currentQuestion) // ... if so then a window alert will appear in the browser printing the innerText of the target variable.
-            }
-        }
-    });
-    document.addEventListener("submit", function (evt) {
-        evt.preventDefault();
-        enterInitials(currentGame.score);
-        setState("topScores");
-    });
-}
+
 
 // My current question count
 var currentQuestion = 0;
@@ -130,13 +97,15 @@ function startGame() { // Declared startGame function, resets the current questi
     countDown(); // Calls the countdown() function to initiate the countdown for the quiz.
 }
 
-function evalAnswer(answerChosen) {
+function evalAnswer(currentQuestion, answerChosen) {
     console.log("answer chosen: " + answerChosen);
     console.log(questions[currentQuestion]["answer"]);
-    if(answerChosen === questions[currentQuestion]["answer"]) {
+    if(answerChosen == questions[currentQuestion]["answer"]) {
         correctAnswer(true);
+        console.log(true);
     } else {
         correctAnswer(false);
+        console.log(false);
     }
 }
 
@@ -217,15 +186,18 @@ function populateQuestion() {
     var questionObj = questions[currentQuestion]; // Declare a variable and assign it the value of the index in the questions array.
     answersEl.innerHTML = ""; // Physically removes the current list items.
     questionEl.textContent = questionObj.question; // Target the text content of the h2 element and assign it the value of the question property in the questionObj variable. Remember that the questionObj value is the questions variable with the index value of currentQuestion.
-    questionObj.answers.forEach(function (answers) { // Target the answers property in the variable questionObj, apply the .forEach method which contains a self-calling function using the property iself as the argument passed into the function through the parameter, and cycle through each current value of the property executing the following code within the code block.
+    for (i = 0; i < questionObj.answers.length; i++) { // Target the answers property in the variable questionObj, apply the .forEach method which contains a self-calling function using the property iself as the argument passed into the function through the parameter, and cycle through each current value of the property executing the following code within the code block.
+        var answer = questionObj.answers[i];
         var li = document.createElement("li");// Declare a variable and assign it the value of a created li element on the document.
-        li.textContent = answers; // assign the li's text content to the value of the answers property.
+        li.setAttribute("data-index", i);
+        li.textContent = answer; // assign the li's text content to the value of the answers property.
         answersEl.appendChild(li); // and then append it to the location where the id="potentialAnswers" is located. In this case, the unordered list.
-    });
         if (currentQuestion === questions.length - 1) { // If currentQuestion is strictly equal to questions.length - 1 in regards to data type and data value...            
-            currentQuestion = 0; // ...assign currentQuestion the value of 0.
+                currentQuestion = 0; // ...assign currentQuestion the value of 0.
         } else { // if not then increment currentQuestion by 1. 
-            currentQuestion++;
+                currentQuestion++;
+        }
+
     }
 }
 
@@ -246,8 +218,8 @@ function topScoresList() {
     console.log("storedTopScores");
     topScoresEl.innerHTML = "";
     var table = document.createElement("table");
-    var tableHead = document.createElement("thead");
-    var tableBody = document.createElement("tbody");
+    tableHead = document.createElement("thead");
+    tableBody = document.createElement("tbody");
     var row = table.insertRow(0);
     var cell = row.insertCell(0);
     cell.innerHTML = "<h2>Your Initials</h2>"
@@ -292,6 +264,40 @@ function countDown() {
     }, 1000);
 }
 
-
+// Declared a function to organize all of my event listeners into one place. The function is called through the function init when the program loads before user input. In doing so, the event listeners will be waiting for the user to activate them.
+function setEventListeners() { 
+    quiz0BtnEle.addEventListener("click", function () { // When quiz0BtnEle is clicked it will call a self-calling function containing the function setState with the argument "trivia"
+        setState("trivia"); // The "trivia" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
+    });
+    quiz1BtnEle.addEventListener("click", function () { // When quiz1BtnEle is clicked it will call a self-calling function containing the function setState with the argument "scores"
+        setState("topScores"); // The "scores" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
+    });
+    quiz2BtnEle.addEventListener("click", function () { // When quiz2BtnEle is clicked it will call a self-calling function containing the function setState with the argument "start"
+        setState("start"); // The "scores" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
+    });
+    topScoresBtnEle.addEventListener("click", function () {
+        setState("topScores");
+    });
+    answersEl.addEventListener("click", function (evt) { // When the answersEl. variable is clicked (answersEl. contains the list items that are appended to the Ul underneathe the questions of the quiz), the event listener will call a self-calling function to pass in the value of the answers property in the questions object as an argument in place of the evt parameter to execute the following code in the code block.
+        var target = evt.target;   // Declares a variable named target that is assigned the target property of the passed in argument. The target is the root element that raised the event.
+        if (target.matches("li")) { // The matches() property is used on the variable target to see if it matches "li"...
+            evalAnswer(currentQuestion, target.getAttribute("data-index"));
+            console.log(target.getAttribute("data-index"));
+            if(currentQuestion === questions.length - 1) {
+                console.log("All questions answered! Let's see how you did!");
+                clearInterval(timeInterval);
+                setState(scores);
+            } else {
+                currentQuestion++;
+                populateQuestion(currentQuestion) // ... if so then a window alert will appear in the browser printing the innerText of the target variable.
+            }
+        }
+    });
+    document.addEventListener("submit", function (evt) {
+        evt.preventDefault();
+        enterInitials(currentGame.score);
+        setState("topScores");
+    });
+}
 
 init(); // Calls the function init() which contains the function holding the eventListeners.
