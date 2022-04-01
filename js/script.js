@@ -1,8 +1,7 @@
 // Create global javaScript selectors.
 var quiz0Ele = document.querySelector("#quiz0");
-var quiz0BtnEle = quiz0Ele.querySelector("button");
+var quiz0BtnEle = quiz0Ele.querySelector("#startQuiz");
 var quiz1Ele = document.querySelector("#quiz1");
-var quiz1BtnEle = quiz1Ele.querySelector("button");
 var quiz2Ele = document.querySelector("#quiz2");
 var quiz2BtnEle = quiz2Ele.querySelector("button");
 var quiz3Ele = document.querySelector("#quiz3");
@@ -16,7 +15,6 @@ var messageEl = document.querySelector("#message");
 var myScoreEl = document.querySelector("#myScore");
 var topScores = document.querySelector("#topScoresMsg");
 var topScoresBtnEle = document.querySelector("#topScoresBtn");
-var gameObj;
 var timeLeft;
 var timeInterval;
 
@@ -83,11 +81,11 @@ var currentQuestion = 0;
 var currentGame;
 function init() { // Declared a function named init which means initialization of the program.
     setEventListeners(); // Calling this function declares the eventListeners for the program.
-    //populateHighScores ();
+    topScoresList();
 }
 
 function storeGameData() { // Store the game data in localStorage
-    localStorage.setItem("storedHighScores", JSON.stringify(storedHighScores));
+    localStorage.setItem("storedTopScores", JSON.stringify(storedTopScores));
 
 }
 
@@ -163,7 +161,7 @@ function setState(state) { // Declared a function called setState with the param
             myScore();
             break;// The break statement ends this switch statement and proceeds with the rest of the code.
 
-        case "start":// If the value of the argument matches the value of this case it will execute the code contained inside.
+        case "scorePage":// If the value of the argument matches the value of this case it will execute the code contained inside.
             topScoresList();
             break;// The break statement ends this switch statement and proceeds with the rest of the code.
         default: // The point of the default statement is to provide code that will be executed if the argument that is passed in does not match any of the cases.
@@ -192,11 +190,6 @@ function populateQuestion() {
         li.setAttribute("data-index", i);
         li.textContent = answer; // assign the li's text content to the value of the answers property.
         answersEl.appendChild(li); // and then append it to the location where the id="potentialAnswers" is located. In this case, the unordered list.
-        if (currentQuestion === questions.length - 1) { // If currentQuestion is strictly equal to questions.length - 1 in regards to data type and data value...            
-                currentQuestion = 0; // ...assign currentQuestion the value of 0.
-        } else { // if not then increment currentQuestion by 1. 
-                currentQuestion++;
-        }
 
     }
 }
@@ -218,8 +211,8 @@ function topScoresList() {
     console.log("storedTopScores");
     topScoresEl.innerHTML = "";
     var table = document.createElement("table");
-    tableHead = document.createElement("thead");
-    tableBody = document.createElement("tbody");
+    var tableHead = document.createElement("thead");
+    var tableBody = document.createElement("tbody");
     var row = table.insertRow(0);
     var cell = row.insertCell(0);
     cell.innerHTML = "<h2>Your Initials</h2>"
@@ -247,6 +240,7 @@ function countDown() {
     timeLeft = 30;
 
     timeInterval = setInterval(function () {
+        currentGame["score"] = timeLeft;
         if (timeLeft > 1) {
             timerEl.textContent = timeLeft + " seconds remaining";
             timeLeft--;
@@ -257,9 +251,8 @@ function countDown() {
         } else {
         timerEl.textContent = "";
         clearInterval(timeInterval);
-        //displayMessage();
         timerEl.textContent = timeLeft + " seconds left! Times up!"
-        setState(2)
+        setState("scores")
         }
     }, 1000);
 }
@@ -269,14 +262,14 @@ function setEventListeners() {
     quiz0BtnEle.addEventListener("click", function () { // When quiz0BtnEle is clicked it will call a self-calling function containing the function setState with the argument "trivia"
         setState("trivia"); // The "trivia" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
     });
-    quiz1BtnEle.addEventListener("click", function () { // When quiz1BtnEle is clicked it will call a self-calling function containing the function setState with the argument "scores"
-        setState("topScores"); // The "scores" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
+    quiz2BtnEle.addEventListener("click", function () { // When quiz1BtnEle is clicked it will call a self-calling function containing the function setState with the argument "scores"
+        setState("scorePage"); // The "scores" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
     });
-    quiz2BtnEle.addEventListener("click", function () { // When quiz2BtnEle is clicked it will call a self-calling function containing the function setState with the argument "start"
-        setState("start"); // The "scores" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
+    topScoresBtnEle.addEventListener("click", function () { // When quiz2BtnEle is clicked it will call a self-calling function containing the function setState with the argument "start"
+        setState("scorePage"); // The "scores" argument will be passed through the parameter of the switch statement. This expression will be matched by the expression attached with the different case clauses. The case that matches the sent in expression will then execute the code contained inside that case and any cases that follow(regardless if it matches) unless prevented from doing so by a break statement.
     });
-    topScoresBtnEle.addEventListener("click", function () {
-        setState("topScores");
+    quiz3BtnEle.addEventListener("click", function () {
+        setState(0);
     });
     answersEl.addEventListener("click", function (evt) { // When the answersEl. variable is clicked (answersEl. contains the list items that are appended to the Ul underneathe the questions of the quiz), the event listener will call a self-calling function to pass in the value of the answers property in the questions object as an argument in place of the evt parameter to execute the following code in the code block.
         var target = evt.target;   // Declares a variable named target that is assigned the target property of the passed in argument. The target is the root element that raised the event.
@@ -286,7 +279,7 @@ function setEventListeners() {
             if(currentQuestion === questions.length - 1) {
                 console.log("All questions answered! Let's see how you did!");
                 clearInterval(timeInterval);
-                setState(scores);
+                setState("scores");
             } else {
                 currentQuestion++;
                 populateQuestion(currentQuestion) // ... if so then a window alert will appear in the browser printing the innerText of the target variable.
@@ -296,7 +289,7 @@ function setEventListeners() {
     document.addEventListener("submit", function (evt) {
         evt.preventDefault();
         enterInitials(currentGame.score);
-        setState("topScores");
+        setState("scorePage");
     });
 }
 

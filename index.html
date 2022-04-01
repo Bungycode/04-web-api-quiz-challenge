@@ -10,13 +10,13 @@
 <body>
     <div id="program">
         <main>
-            <section id="quiz0" data-states='["start"]'>
+            <section id="quiz0" data-states='[0]'>
                 <br>
                 <h1>JavaScript Quiz Challenge</h2>
                 <p>How well do you think you know JavaScript!? Test your knowledge!</p>
                 <p>Answer the questions before the time runs out!</p>
-                <button>Start the quiz!</button>
-                <button id="topScoresBtn" data-states='["start","scores"]'>Top Scores</button>
+                <button id="startQuiz">Start the quiz!</button>
+                <button id="topScoresBtn" data-states='[0,"scores"]'>Top Scores</button>
                 
             </section>
             <section id="quiz1" class="hide" data-states='["trivia"]'>
@@ -24,22 +24,20 @@
                 <h2 id="countDown">hello</h2>
                 <h2 id="question">Fake text</h2>
                 <ol id="potentialAnswers"></ol>
-                <button>Go to State 2</button>
                 <h3 id="message"></h3>
             </section>
             <section id="quiz2" class="hide" data-states='["scores"]'>
                 <h1>Let's see how you did!</h1>
                 <h2>My Score: <span id="myScore"></span></h2>
-                <form id="topScoreForm">
+                <form>
                     <p>Player Initials Here: </p>
                     <label class="initialsStyle">
                         <input type="text" id="initials" />
                     </label>
                 </form>
-
                 <button>Submit</button>
             </section>
-            <section id="quiz3" class="hide" data-states='["topScores"]'>
+            <section id="quiz3" class="hide" data-states='["scorePage"]'>
                 <h1>Top Scores</h1>
                 <h2 id="topScoresMsg"></h2>
                 <p id="topScoresEl"></p>
