@@ -6,13 +6,8 @@ body {
   -o-background-size: cover;
   background-size: cover;
   color: white;
-  font-size: 26px;
+  font-size: 30px;
   }
-  
-  /* main {
-    display: flex;
-    justify-content: space-betweeen;
-  } */
   
   main button {
     padding: 10px;
@@ -43,5 +38,17 @@ body {
   li:hover {
     opacity: 100%;
     background-color: darkblue;
+  }
+
+  @media only screen and (max-width: 768px) {
+    body {
+      font-size: 18px;
+    }
+  }
+
+  @media only screen and (max-width: 450px) {
+    body {
+      font-size: 14px;
+    }
   }
   
